@@ -71,21 +71,14 @@ class DataProcessor:
         self.my_norm.T.to_csv(output_file_path)
 
     @staticmethod
-    def set_var_threshold(my_norm: pd.DataFrame) -> float:
-        data = my_norm.values
-        var_per_cg = np.var(data, axis=0)
-        var_threshold = np.mean(var_per_cg)
-
-        return var_threshold
-
-    @staticmethod
-    def reduce(my_norm: pd.DataFrame, var_threshold: float, selection_type=0) -> pd.DataFrame:
-        data = my_norm.values
-        var_per_cg = np.var(data, axis=0)
+    def reduce(my_norm: pd.DataFrame, selection_type=0) -> pd.DataFrame:
+        var_per_cg = my_norm.var()
 
         if selection_type == 0:
+            var_threshold = np.quantile(var_per_cg, 0.5)
             mask = [True if var < var_threshold else False for var in var_per_cg]
         else:
+            var_threshold = np.quantile(var_per_cg, 0.5)
             mask = [True if var > var_threshold else False for var in var_per_cg]
 
         reduced_mynorm = my_norm.loc[:, mask]

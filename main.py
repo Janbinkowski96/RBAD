@@ -37,15 +37,13 @@ def cli(ctx, my_norm: str, sample_sheet: str, output_file: str) -> None:
     print_("Filtering 1.")
     reduced_frames = []
     for unique_class, mynorm in tqdm(frames_of_data.items()):
-        threshold = processor.set_var_threshold(my_norm=mynorm)
-        selected_my_norm = processor.reduce(my_norm=mynorm, var_threshold=threshold)
+        selected_my_norm = processor.reduce(my_norm=mynorm)
         reduced_frames.append(selected_my_norm)
 
     clear_()
     print_("Filtering 2.")
     processor.universal_merge(list_of_frames=reduced_frames)
-    threshold = processor.set_var_threshold(my_norm=processor.my_norm)
-    processor.my_norm = processor.reduce(my_norm=processor.my_norm, var_threshold=threshold, selection_type=1)
+    processor.my_norm = processor.reduce(my_norm=processor.my_norm, selection_type=1)
     processor.merge(column_to_split=column_to_split)
     processor.save_data(output_file_path=output_file)
     clear_()
